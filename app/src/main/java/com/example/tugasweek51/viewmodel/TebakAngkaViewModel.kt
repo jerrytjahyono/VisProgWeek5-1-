@@ -15,31 +15,41 @@ class TebakAngkaViewModel : ViewModel() {
     private val _uiState = MutableStateFlow(TebakAngkaUiState())
     val uiState: StateFlow<TebakAngkaUiState> = _uiState.asStateFlow()
 
-    var InputUser by mutableStateOf(0)
+    var inputUser by mutableStateOf("")
         private set
 
-    private fun merandomAngka(): Int{
-        val angkaRandom = Random.nextInt(1, 11)
-        _uiState.update { currentState ->
-            currentState.copy(
-                angkaRandom = angkaRandom
+    fun updateInputUser(inputUserView: String){
+        inputUser = inputUserView
+    }
+
+    private fun generateAngkaRandom(): Int{
+        return Random.nextInt(1, 11)
+    }
+
+    fun randomAngkaTebakan(){
+        _uiState.update { kokontol ->
+            kokontol.copy(
+                angkaRandom = generateAngkaRandom()
             )
         }
-        return angkaRandom
     }
-
     fun pengecekInputanUser(){
-        if (InputUser == uiState.value.angkaRandom){
+        if (inputUser.toInt() == uiState.value.angkaRandom){
             val scoreTerbaru = _uiState.value.score.plus(1)
             val banyakTebakanUserTerbaru = _uiState.value.banyakTebakanUser.plus(1)
-            gameBerakhir(scoreTerbaru,banyakTebakanUserTerbaru)
+            gameBerakhir(
+                scoreTerbaru =  scoreTerbaru,
+                banyakTebakanUserTerbaru =  banyakTebakanUserTerbaru)
+            randomAngkaTebakan()
         } else {
             val banyakTebakanUserTerbaru = _uiState.value.banyakTebakanUser.plus(1)
-            gameBerakhir(_uiState.value.score,banyakTebakanUserTerbaru)
+            gameBerakhir(banyakTebakanUserTerbaru =   banyakTebakanUserTerbaru)
         }
     }
 
-    private fun gameBerakhir (banyakTebakanUserTerbaru: Int, scoreTerbaru: Int){
+    private fun gameBerakhir (
+        banyakTebakanUserTerbaru: Int,
+        scoreTerbaru: Int = uiState.value.score){
         if (banyakTebakanUserTerbaru >= 3){
             _uiState.update { currentState ->
                 currentState.copy(
@@ -47,21 +57,19 @@ class TebakAngkaViewModel : ViewModel() {
                     gameBerakhir = true
                 )
             }
-            merandomAngka()
+
         } else {
             _uiState.update { currentState ->
                 currentState.copy(
                     score = scoreTerbaru,
                     banyakTebakanUser = banyakTebakanUserTerbaru,
-                    gameBerakhir = false
                 )
             }
-            merandomAngka()
         }
     }
 
     fun bermainLagi() {
-        _uiState.value = TebakAngkaUiState(merandomAngka())
+        _uiState.value = TebakAngkaUiState(angkaRandom = generateAngkaRandom())
     }
 
     init {
