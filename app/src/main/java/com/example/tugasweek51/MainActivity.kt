@@ -11,6 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.tugasweek51.ui.theme.TugasWeek51Theme
+import com.example.tugasweek51.ui.view.IpkView
 import com.example.tugasweek51.ui.view.TebakAngkaView
 
 class MainActivity : ComponentActivity() {
@@ -23,7 +24,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    TebakAngkaView()
+                    IpkView()
                 }
             }
         }

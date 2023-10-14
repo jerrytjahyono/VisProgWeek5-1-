@@ -25,21 +25,20 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.tugasweek51.ui.theme.TugasWeek51Theme
 import com.example.tugasweek51.viewmodel.TebakAngkaViewModel
 
 
 @Composable
-fun TebakAngkaView( tebakAngkaViewModel: TebakAngkaViewModel = viewModel()){
+fun TebakAngkaView(
+    tebakAngkaViewModel: TebakAngkaViewModel = viewModel()
+    ) {
     val tebakAngkaUiState by tebakAngkaViewModel.uiState.collectAsState()
 
     Column (
@@ -58,74 +57,56 @@ fun TebakAngkaView( tebakAngkaViewModel: TebakAngkaViewModel = viewModel()){
             fontWeight = FontWeight.Bold
         )
 
-
-        Column (
+        Card (
             modifier = Modifier
-                .fillMaxSize()
-                .verticalScroll(rememberScrollState())
-                .padding(10.dp, 10.dp),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ){
-
-            Text(
-                text = "Guest The Number",
-                modifier = Modifier
-                    .padding(10.dp,10.dp,10.dp,10.dp),
-                fontSize = 20.sp,
-                fontWeight = FontWeight.Bold
-            )
-
-            Card (
+                .fillMaxWidth()
+                .padding(10.dp, 10.dp, 10.dp, 10.dp)
+        ) {
+            Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(10.dp, 10.dp, 10.dp, 10.dp)
+                    .padding(10.dp, 10.dp, 10.dp, 10.dp),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Column(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(10.dp, 10.dp, 10.dp, 10.dp),
-                    verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = Alignment.CenterHorizontally
+                        .background(color = Color.DarkGray, shape = RoundedCornerShape(10.dp))
+                        .align(Alignment.End)
+                        .padding(7.dp, 7.dp, 7.dp, 7.dp)
+
                 ) {
-                    Column(
-                        modifier = Modifier
-                            .background(color = Color.DarkGray, shape = RoundedCornerShape(10.dp))
-                            .align(Alignment.End)
-                            .padding(7.dp, 7.dp, 7.dp, 7.dp)
+                    Text(
+                        text = "Number of Guesses: ${tebakAngkaUiState.banyakTebakanUser}",
+                        modifier = Modifier,
+                        color = Color.White,
+                    )
+                }
 
-                    ) {
-                        Text(
-                            text = "Number of Guesses: ${tebakAngkaUiState.banyakTebakanUser}",
-                            modifier = Modifier,
-                            color = Color.White,
-                        )
-                    }
-
-                    Text(
-                        text = "${tebakAngkaUiState.angkaRandom}",
-                        fontWeight = FontWeight.Bold,
-                        modifier = Modifier
-                            .padding(10.dp, 10.dp),
-                        fontSize = 40.sp
-                    )
-                    Text(
-                        text = "From 1 to 10 Guess The Number",
-                        modifier = Modifier
-                            .padding(10.dp, 10.dp),
-                        fontSize = 15.sp,
-                        fontWeight = FontWeight.Bold
-                    )
-                    Text(
-                        text = "Score: ${tebakAngkaUiState.score}",
-                        fontWeight = FontWeight.Bold,
-                    )
+                Text(
+                    text = "${tebakAngkaUiState.angkaRandom}",
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier
+                        .padding(10.dp, 10.dp),
+                    fontSize = 40.sp
+                )
+                Text(
+                    text = "From 1 to 10 Guess The Number",
+                    modifier = Modifier
+                        .padding(10.dp, 10.dp),
+                    fontSize = 15.sp,
+                    fontWeight = FontWeight.Bold
+                )
+                Text(
+                    text = "Score: ${tebakAngkaUiState.score}",
+                    fontWeight = FontWeight.Bold,
+                )
 
                     CustomAnswerField(
-                        value = tebakAngkaViewModel.InputUser.toString(),
-                        onValueChanged = { tebakAngkaViewModel.InputUser },
+                        value = tebakAngkaViewModel.inputUser,
+                        onValueChanged = { tebakAngkaViewModel.updateInputUser(it) },
                         text = "Enter Your Word",
-                        keyboardOptions = KeyboardOptions.Default.copy(
+                        keyboardOptions = KeyboardOptions(
                             keyboardType = KeyboardType.Number,
                             imeAction = ImeAction.Done
                         ),
@@ -133,29 +114,25 @@ fun TebakAngkaView( tebakAngkaViewModel: TebakAngkaViewModel = viewModel()){
                             .fillMaxWidth()
                             .padding(horizontal = 16.dp, vertical = 8.dp)
                     )
-                }
             }
-
-            Button(
-                onClick = {
-                    tebakAngkaViewModel.pengecekInputanUser()
-                },
-                modifier = Modifier
-                    .fillMaxWidth(),
-                enabled = true
-            ){
-                Text(text = "Submit")
-            }
-
-            if (tebakAngkaUiState.gameBerakhir) {
-                dialogMuncul(
-                    score = tebakAngkaUiState.score,
-                    bermainLagi = { tebakAngkaViewModel.bermainLagi() }
-                )
-            }
-
         }
 
+        Button(
+            onClick = {
+                tebakAngkaViewModel.pengecekInputanUser()
+            },
+            modifier = Modifier
+                .fillMaxWidth(),
+        ){
+            Text(text = "Submit")
+        }
+
+        if (tebakAngkaUiState.gameBerakhir) {
+            dialogMuncul(
+                score = tebakAngkaUiState.score,
+                bermainLagi = { tebakAngkaViewModel.bermainLagi() }
+            )
+        }
     }
 
 }
@@ -187,19 +164,14 @@ fun dialogMuncul(
 ){
 
     val activity = (LocalContext.current as Activity)
-
     AlertDialog(
         onDismissRequest =
         {},
 
-        title =
-        {
-            Text(text = "Welp!")
-        },
+        title = { Text(text = "Welp!") },
 
-        text =
-        {
-            "Your Score: $score"
+        text = {
+               Text(text = "Your score: $score")
         },
         dismissButton = {
             TextButton(
@@ -223,7 +195,5 @@ fun dialogMuncul(
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun TebakAngkaPreview() {
-    TugasWeek51Theme{
-        TebakAngkaView()
-    }
+   TebakAngkaView()
 }

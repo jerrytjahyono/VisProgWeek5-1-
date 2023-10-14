@@ -4,6 +4,6 @@ data class TebakAngkaUiState (
     val angkaRandom: Int = 0,
     val score: Int = 0,
     val banyakTebakanUser: Int = 0,
-    val gameBerakhir: Boolean = true,
+    val gameBerakhir: Boolean = false,
 ){
 }
